@@ -40,3 +40,11 @@ async fn index_handler(Json(input): Json<User>) -> impl IntoResponse {
     println!("{:?}", input);
     Json(input)
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn func() {
+        assert_eq!(1, 1)
+    }
+}
