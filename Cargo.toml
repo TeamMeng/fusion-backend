@@ -1,5 +1,5 @@
 [package]
-name = "template"
+name = "fuscion"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
@@ -8,7 +8,17 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0.95"
-axum = { version = "0.8.1", features = ["http2", "query", "tracing", "multipart"] }
+axum = { version = "0.8.1", features = [
+    "http2",
+    "query",
+    "tracing",
+    "multipart",
+] }
 serde = { version = "1.0.217", features = ["derive"] }
-tokio = { version = "1.42.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
+tokio = { version = "1.42.0", features = [
+    "rt",
+    "rt-multi-thread",
+    "macros",
+    "net",
+] }
 tower-http = { version = "0.6.2", features = ["trace", "cors"] }
