@@ -16,6 +16,8 @@ axum = { version = "0.8.1", features = [
 ] }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_yaml = "0.9.34"
+sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio", "tls-rustls", "chrono"] }
+sqlx-db-tester = "0.5.0"
 thiserror = "2.0.9"
 tokio = { version = "1.42.0", features = [
     "rt",

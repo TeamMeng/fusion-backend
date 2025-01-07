@@ -8,4 +8,7 @@ pub enum AppError {
 
     #[error("serde yaml error: {0}")]
     SerdeYamlError(#[from] serde_yaml::Error),
+
+    #[error("sqlx error: {0}")]
+    SqlxError(#[from] sqlx::Error),
 }
