@@ -1,3 +1,5 @@
+use axum::{http::StatusCode, response::IntoResponse, Json};
+use serde::Serialize;
 use std::io;
 use thiserror::Error;
 
@@ -15,6 +17,33 @@ pub enum AppError {
     #[error("sqlx error: {0}")]
     SqlxError(#[from] sqlx::Error),
 
-    #[error("server error: {0}")]
+    #[error("{0}")]
     ServerError(String),
+}
+
+#[derive(Debug, Serialize)]
+struct OutputError {
+    pub error: String,
+}
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> axum::response::Response {
+        let status = match &self {
+            Self::Argon2Error(_) => StatusCode::BAD_REQUEST,
+            Self::IoError(_) | Self::SerdeYamlError(_) | Self::SqlxError(_) => {
+                StatusCode::INTERNAL_SERVER_ERROR
+            }
+            Self::ServerError(_) => StatusCode::BAD_REQUEST,
+        };
+
+        (status, Json(OutputError::new(self.to_string()))).into_response()
+    }
+}
+
+impl OutputError {
+    fn new(error: impl Into<String>) -> Self {
+        Self {
+            error: error.into(),
+        }
+    }
 }

@@ -1,8 +1,15 @@
 use anyhow::Result;
-use axum::{http::Method, response::IntoResponse, routing::post, Json, Router};
+use axum::{http::Method, routing::post, Router};
+use fuscion::{signin_handler, signup_handler, AppConfig, AppState};
 use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
 use tower_http::cors::{self, CorsLayer};
+use tracing::{info, level_filters::LevelFilter};
+use tracing_subscriber::{
+    fmt::Layer, layer::SubscriberExt, registry, util::SubscriberInitExt, Layer as _,
+};
+
+const ADDR: &str = "127.0.0.1:";
 
 #[derive(Debug, Serialize, Deserialize)]
 struct User {
@@ -13,8 +20,16 @@ struct User {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let listener = TcpListener::bind("localhost:3000").await?;
-    println!("Server listening on localhost:3000");
+    let config = AppConfig::new()?;
+    let addr = format!("{}{}", ADDR, config.server.port);
+
+    let state = AppState::new(config).await?;
+
+    let layer = Layer::new().pretty().with_filter(LevelFilter::INFO);
+    registry().with(layer).init();
+
+    info!("Server listening on {}", addr);
+    let listener = TcpListener::bind(addr).await?;
 
     let cors = CorsLayer::new()
         .allow_methods([
@@ -28,15 +43,12 @@ async fn main() -> Result<()> {
         .allow_headers(cors::Any);
 
     let app = Router::new()
-        .route("/register", post(index_handler))
+        .route("/register", post(signup_handler))
+        .route("/login", post(signin_handler))
+        .with_state(state)
         .layer(cors);
 
     axum::serve(listener, app).await?;
 
     Ok(())
-}
-
-async fn index_handler(Json(input): Json<User>) -> impl IntoResponse {
-    println!("{:?}", input);
-    Json(input)
 }

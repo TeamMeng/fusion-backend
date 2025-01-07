@@ -24,7 +24,7 @@ pub struct CreateUser {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Register {
+pub struct SigninUser {
     pub email: String,
     pub password: String,
 }
@@ -67,7 +67,7 @@ impl AppState {
         Ok(user)
     }
 
-    pub async fn register(&self, input: Register) -> Result<User, AppError> {
+    pub async fn signin(&self, input: SigninUser) -> Result<User, AppError> {
         match self.find_user_by_email(&input.email).await? {
             Some(user) => {
                 if verify_password(&input.password, &user.password_hash)? {
@@ -116,7 +116,7 @@ mod tests {
     use super::*;
     use anyhow::Result;
 
-    impl Register {
+    impl SigninUser {
         fn new(email: impl Into<String>, password: impl Into<String>) -> Self {
             Self {
                 email: email.into(),
@@ -209,7 +209,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn register_should_work() -> Result<()> {
+    async fn signin_should_work() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
 
         let username = "TeamMeng";
@@ -220,9 +220,9 @@ mod tests {
 
         state.create_user(input).await?;
 
-        let input = Register::new(email, password);
+        let input = SigninUser::new(email, password);
 
-        let user = state.register(input).await?;
+        let user = state.signin(input).await?;
 
         assert_eq!(username, user.username);
         assert_eq!(email, user.email);

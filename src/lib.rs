@@ -1,6 +1,7 @@
 mod config;
 mod error;
-mod model;
+mod handlers;
+mod models;
 
 use sqlx::PgPool;
 use sqlx_db_tester::TestPg;
@@ -8,6 +9,8 @@ use std::{ops::Deref, path::Path, sync::Arc};
 
 pub use config::{AppConfig, AuthConfig, ServerConfig};
 pub use error::AppError;
+pub use handlers::{signin_handler, signup_handler};
+pub use models::{CreateUser, SigninUser, User};
 
 #[derive(Debug, Clone)]
 pub struct AppState {

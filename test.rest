@@ -1,0 +1,18 @@
+### register
+POST  http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "username": "TeamMeng",
+    "email": "Meng@123.com",
+    "password": "hunter21"
+}
+
+### login
+POST  http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "Meng@123.com",
+    "password": "hunter21"
+}
