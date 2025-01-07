@@ -8,12 +8,14 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0.95"
+argon2 = { version = "0.5.3", features = ["std"] }
 axum = { version = "0.8.1", features = [
     "http2",
     "query",
     "tracing",
     "multipart",
 ] }
+chrono = { version = "0.4.39", features = ["serde"] }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_yaml = "0.9.34"
 sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio", "tls-rustls", "chrono"] }

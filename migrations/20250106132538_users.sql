@@ -3,7 +3,6 @@
 -- create user table
 CREATE TABLE IF NOT EXISTS users(
   id bigserial PRIMARY KEY,
-  ws_id bigint NOT NULL,
   username varchar(64) NOT NULL,
   email varchar(64) NOT NULL,
   -- hashed argon2 password, length 97
